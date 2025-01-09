@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package personal.nonogramsolver.architecture.reader;
+package personal.nonogramsolver.infrastructure.reader;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -47,7 +47,7 @@ public class BooleanArrayNonogramReader implements NonogramReader {
         
         if (fill) {
             for (int i = 0; i < booleanArray.length; i++) for (int j = 0; j < booleanArray[i].length; j++) {
-                n.setCellStatus(j, i, booleanArray[i][j] ? CellStatus.ENABLED : CellStatus.DISABLED);
+                n.val(j, i, booleanArray[i][j] ? CellStatus.ENABLED : CellStatus.DISABLED);
             }
         }
         

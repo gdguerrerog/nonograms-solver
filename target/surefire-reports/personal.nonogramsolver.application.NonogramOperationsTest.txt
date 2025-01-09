@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: personal.nonogramsolver.application.NonogramOperationsTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.160 s -- in personal.nonogramsolver.application.NonogramOperationsTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.057 s -- in personal.nonogramsolver.application.NonogramOperationsTest

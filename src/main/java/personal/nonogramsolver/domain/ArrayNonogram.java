@@ -35,22 +35,22 @@ public class ArrayNonogram implements Nonogram {
     }
 
     @Override
-    public Integer[] getRowInfo(int index) {
+    public Integer[] row(int index) {
         return rowInfo[index];
     }
 
     @Override
-    public Integer[] getColInfo(int index) {
+    public Integer[] col(int index) {
         return colInfo[index];
     }
 
     @Override
-    public CellStatus getCellStatus(int x, int y) {
+    public CellStatus val(int x, int y) {
         return state[y][x];
     }
 
     @Override
-    public void setCellStatus(int x, int y, CellStatus status) {
+    public void val(int x, int y, CellStatus status) {
         state[y][x] = status;
     }
     

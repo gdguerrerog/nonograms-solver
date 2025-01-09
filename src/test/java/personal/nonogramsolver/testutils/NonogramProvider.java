@@ -6,7 +6,7 @@ package personal.nonogramsolver.testutils;
 
 import java.util.Random;
 import java.util.stream.IntStream;
-import personal.nonogramsolver.architecture.reader.BooleanArrayNonogramReader;
+import personal.nonogramsolver.infrastructure.reader.BooleanArrayNonogramReader;
 import personal.nonogramsolver.domain.Nonogram;
 
 /**
@@ -29,10 +29,9 @@ public class NonogramProvider {
         {t, f, t}
     };
     
+    // Singleton
     private NonogramProvider() {}
-    
     private static NonogramProvider instance = null;
-    
     public static NonogramProvider get() {
         if (instance == null) instance = new NonogramProvider();
         return instance;

@@ -13,12 +13,12 @@ public interface Nonogram {
     int cols();
     int rows();
     
-    default Integer[] getSize() { return new Integer[]{cols(), rows()}; }
+    default Integer[] size() { return new Integer[]{cols(), rows()}; }
     
-    Integer[] getRowInfo(int index);
-    Integer[] getColInfo(int index);
+    Integer[] row(int index);
+    Integer[] col(int index);
     
-    CellStatus getCellStatus(int x, int y);
-    void setCellStatus(int x, int y, CellStatus status);
+    CellStatus val(int x, int y);
+    void val(int x, int y, CellStatus status);
     
 }

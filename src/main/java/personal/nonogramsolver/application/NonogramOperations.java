@@ -4,10 +4,13 @@
  */
 package personal.nonogramsolver.application;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.IntStream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import personal.nonogramsolver.domain.ArrayNonogram;
 import personal.nonogramsolver.domain.CellStatus;
 import personal.nonogramsolver.domain.Nonogram;
 
@@ -48,14 +51,51 @@ public class NonogramOperations {
     
     public CellStatus[] row(int index) {
         CellStatus[] row = new CellStatus[nonogram.cols()];
-        for (int i = 0; i < nonogram.cols(); i++) row[i] = nonogram.getCellStatus(i, index);
+        for (int i = 0; i < nonogram.cols(); i++) row[i] = nonogram.val(i, index);
         return row;
     }
     
     public CellStatus[] col(int index) {
         CellStatus[] col = new CellStatus[nonogram.rows()];
-        for (int i = 0; i < nonogram.rows(); i++) col[i] = nonogram.getCellStatus(index, i);
+        for (int i = 0; i < nonogram.rows(); i++) col[i] = nonogram.val(index, i);
         return col;
+    }
+    
+    
+    public boolean equals(Nonogram other) {
+        
+        if (nonogram.rows() != other.rows()) return false;
+        if (nonogram.cols() != other.cols()) return false;
+        
+        for (int i = 0; i < nonogram.cols(); i++) if (!Arrays.equals(nonogram.col(i), other.col(i))) return false;
+        for (int i = 0; i < nonogram.rows(); i++) if (!Arrays.equals(nonogram.row(i), other.row(i))) return false;
+         
+        return true;
+    }
+    
+    public boolean equalsFill(Nonogram other) {
+        
+        if (!equals(other)) return false;
+        
+        for (int i = 0; i < nonogram.rows(); i++) for(int j = 0; j < nonogram.cols(); j++) {
+            if (nonogram.val(j, i).compareTo(other.val(j, i)) != 0) return false; 
+        }
+        
+        return true;
+    }
+    
+    public Nonogram clone() {
+        Integer[][] rows = IntStream.range(0, nonogram.rows()).mapToObj(nonogram::row).toArray(size -> new Integer[size][]);
+        Integer[][] cols = IntStream.range(0, nonogram.cols()).mapToObj(nonogram::col).toArray(size -> new Integer[size][]);
+        
+        Nonogram clone = new ArrayNonogram(rows, cols);
+        
+        for (int i = 0; i < nonogram.rows(); i++) for (int j = 0; j < nonogram.cols(); j++) {
+            clone.val(j, i, nonogram.val(j, i));
+        }
+        
+        return clone;
+        
     }
     
     

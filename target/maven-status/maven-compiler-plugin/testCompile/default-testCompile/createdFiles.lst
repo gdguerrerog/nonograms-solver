@@ -1,0 +1,5 @@
+personal\nonogramsolver\architecture\reader\BooleanArrayNongramReaderTest.class
+personal\nonogramsolver\architecture\writter\NonogramStringWritterTest.class
+personal\nonogramsolver\architecture\reader\FileNonogramReaderTest.class
+personal\nonogramsolver\testutils\NonogramProvider.class
+personal\nonogramsolver\application\NonogramOperationsTest.class

@@ -4,6 +4,8 @@
  */
 package personal.nonogramsolver.architecture.writter;
 
+import personal.nonogramsolver.infrastructure.writter.NonogramStringWritter;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import personal.nonogramsolver.testutils.NonogramProvider;
@@ -22,14 +24,30 @@ public class NonogramStringWritterTest {
     }
     
     @Test
-    public void testString() {
-        NonogramStringWritter w = new NonogramStringWritter();
-        String representation = w.writeNonogram(provider.random(15, 15, true));
+    public void printTest() {
         
-        System.out.println(representation);
+        final String rep1x1 =   "  1\n\n" +
+                                "1 #\n";
+        
+        final String rep2x2 =   "  11\n\n" +
+                                "1 #-\n" +
+                                "1 -#\n";
+        
+        final String rep3x3 =   "   313\n\n" +
+                                " 3 ###\n" +
+                                "11 #-#\n" +
+                                "11 #-#\n";
+        
+        NonogramStringWritter w = new NonogramStringWritter();
 
-
-
+        String representation = w.writeNonogram(provider.get1X1(true));
+        Assertions.assertEquals(rep1x1, representation);
+        
+        representation = w.writeNonogram(provider.get2X2(true));
+        Assertions.assertEquals(rep2x2, representation);
+        
+        representation = w.writeNonogram(provider.get3X3(true));
+        Assertions.assertEquals(rep3x3, representation);
     }
     
 }

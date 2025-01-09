@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="personal.nonogramsolver.application.NonogramOperationsTest" time="0.057" tests="2" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="personal.nonogramsolver.architecture.reader.FileNonogramReaderTest" time="0.267" tests="1" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,8 +15,9 @@
     <property name="user.country" value="419"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-17\bin"/>
-    <property name="sun.java.command" value="C:\Users\German\AppData\Local\Temp\surefire1026846049162499263\surefirebooter-20250109145941799_3.jar C:\Users\German\AppData\Local\Temp\surefire1026846049162499263 2025-01-09T14-59-41_625-jvmRun1 surefire-20250109145941799_1tmp surefire_0-20250109145941799_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\German\AppData\Local\Temp\surefire2762447421118406716\surefirebooter-20250109150110577_3.jar C:\Users\German\AppData\Local\Temp\surefire2762447421118406716 2025-01-09T15-01-10_412-jvmRun1 surefire-20250109150110577_1tmp surefire_0-20250109150110577_2tmp"/>
     <property name="jdk.debug" value="release"/>
+    <property name="test" value="personal.nonogramsolver.architecture.reader.FileNonogramReaderTest#readFileTest"/>
     <property name="surefire.test.class.path" value="C:\Users\German\Documents\Repositories\nonograms-solver\target\test-classes;C:\Users\German\Documents\Repositories\nonograms-solver\target\classes;C:\Users\German\.m2\repository\org\projectlombok\lombok\1.18.36\lombok-1.18.36.jar;C:\Users\German\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.7.0\junit-jupiter-api-5.7.0.jar;C:\Users\German\.m2\repository\org\apiguardian\apiguardian-api\1.1.0\apiguardian-api-1.1.0.jar;C:\Users\German\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\German\.m2\repository\org\junit\platform\junit-platform-commons\1.7.0\junit-platform-commons-1.7.0.jar;C:\Users\German\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.7.0\junit-jupiter-engine-5.7.0.jar;C:\Users\German\.m2\repository\org\junit\platform\junit-platform-engine\1.7.0\junit-platform-engine-1.7.0.jar;C:\Users\German\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.18.2\jackson-databind-2.18.2.jar;C:\Users\German\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.18.2\jackson-annotations-2.18.2.jar;C:\Users\German\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.18.2\jackson-core-2.18.2.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
     <property name="user.home" value="C:\Users\German"/>
@@ -30,7 +31,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\German\AppData\Local\Temp\surefire1026846049162499263\surefirebooter-20250109145941799_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\German\AppData\Local\Temp\surefire2762447421118406716\surefirebooter-20250109150110577_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="17.0.12+8-LTS-286"/>
@@ -57,6 +58,8 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="equalsNonogramsTest" classname="personal.nonogramsolver.application.NonogramOperationsTest" time="0.026"/>
-  <testcase name="extractGroupsTest" classname="personal.nonogramsolver.application.NonogramOperationsTest" time="0.002"/>
+  <testcase name="readFileTest" classname="personal.nonogramsolver.architecture.reader.FileNonogramReaderTest" time="0.25">
+    <system-out><![CDATA[Here!!!
+]]></system-out>
+  </testcase>
 </testsuite>
