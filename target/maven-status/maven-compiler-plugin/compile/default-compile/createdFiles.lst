@@ -1,0 +1,6 @@
+personal\nonogramsolver\domain\CellStatus.class
+personal\nonogramsolver\architecture\BaseNonogramStringRepresentation.class
+personal\nonogramsolver\domain\Nonogram.class
+personal\nonogramsolver\architecture\NonogramWritter.class
+personal\nonogramsolver\domain\ArrayNonogram.class
+personal\nonogramsolver\NonogramSolver.class
