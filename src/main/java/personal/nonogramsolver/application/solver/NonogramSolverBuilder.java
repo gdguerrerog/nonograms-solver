@@ -10,6 +10,8 @@ import personal.nonogramsolver.domain.Nonogram;
  *
  * @author German at CLEZ
  */
-public interface StrategyNonogramFactory {
-    StraregyNonogram build(Nonogram nonogram);
+public interface NonogramSolverBuilder {
+    
+    NonogramSolver build();
+    
 }

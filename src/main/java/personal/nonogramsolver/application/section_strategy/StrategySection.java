@@ -2,8 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package personal.nonogramsolver.application.solver;
-
+package personal.nonogramsolver.application.section_strategy;
 import java.util.List;
 import personal.nonogramsolver.domain.CellStatus;
 
@@ -11,14 +10,12 @@ import personal.nonogramsolver.domain.CellStatus;
  *
  * @author German at CLEZ
  */
-public interface StraregyNonogram {
+public interface StrategySection {
     
-    List<NonogramInformation> getInformation();
+    List<SectionInformation> getInformation(CellStatus[] section);
     
-    record NonogramInformation(
-            CellStatus status,
-            int x,
-            int y
-    ) {}
-    
+    record SectionInformation (
+        CellStatus status,
+        int index
+    ){}
 }

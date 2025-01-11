@@ -11,8 +11,10 @@ import java.util.stream.IntStream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import personal.nonogramsolver.domain.ArrayNonogram;
+import personal.nonogramsolver.domain.ArraySection;
 import personal.nonogramsolver.domain.CellStatus;
 import personal.nonogramsolver.domain.Nonogram;
+import personal.nonogramsolver.domain.Section;
 
 /**
  *
@@ -98,5 +100,16 @@ public class NonogramOperations {
         
     }
     
+    public Section rowSection(int index) {
+        CellStatus[] statuses = new CellStatus[nonogram.cols()];
+        for (int i = 0; i < statuses.length; i++) statuses[i] = nonogram.val(i, index);
+        return new ArraySection(nonogram.row(index), statuses);
+    }
+    
+    public Section colSection(int index) {
+        CellStatus[] statuses = new CellStatus[nonogram.rows()];
+        for (int i = 0; i < statuses.length; i++) statuses[i] = nonogram.val(index, i);
+        return new ArraySection(nonogram.col(index), statuses);
+    }
     
 }
