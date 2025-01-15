@@ -13,12 +13,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ArraySection implements Section {
 
-    private final Integer[] groups;
+    private final Group group;
     private final CellStatus[] sectionArray;
     
+    public ArraySection(Integer[] group, CellStatus[] sectionArray) {
+        this.group = new ArrayGroup(group);
+        this.sectionArray = sectionArray;
+    }
+    
     @Override
-    public Integer[] grops() {
-        return groups;
+    public Group group() {
+        return group;
     }
 
     @Override

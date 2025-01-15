@@ -112,4 +112,15 @@ public class NonogramOperations {
         return new ArraySection(nonogram.col(index), statuses);
     }
     
+    public List<Section> rowSections() {
+        List<Section> exit = new LinkedList();
+        for (int i = 0; i < nonogram.rows(); i++) exit.add(rowSection(i));
+        return exit;
+    }
+    
+    public List<Section> colSections() {
+        List<Section> exit = new LinkedList();
+        for (int i = 0; i < nonogram.cols(); i++) exit.add(colSection(i));
+        return exit;
+    }
 }

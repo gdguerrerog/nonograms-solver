@@ -24,17 +24,20 @@ public class SectionAFD<TAcc> {
         
         int status = initialStatus;
         int groupIndex = 0;
-        Integer[] grops = section.grops();
+        Group group = section.group();
         
         TAcc acc = accumulator;
         
         for (int i = 0; i < section.size(); i++) {
-            Integer group = groupIndex >= grops.length ? null : grops[groupIndex];
-            EvaluateResult<TAcc> result = func.evaluate(new EvaluateParams<TAcc>(status, i, group, section.status(i), acc));
+            Integer groupVal = groupIndex >= group.size() ? null : group.val(i);
+            EvaluateResult<TAcc> result = func.evaluate(new EvaluateParams<>(status, i, groupVal, section.status(i), acc));
 
+            
             if (result.nextGroup) groupIndex++;
             status = result.nextStatus;
             acc = result.acc;
+
+            if (result.terminate) break;
         }
         
         return new IterateResult(status, groupIndex, acc);
@@ -63,6 +66,14 @@ public class SectionAFD<TAcc> {
         private final int nextStatus;
         private final boolean nextGroup;
         private final TAcc acc;
+        private final boolean terminate;
+        
+        public EvaluateResult(int nextStatus, TAcc acc) {
+            this.nextStatus = nextStatus;
+            this.nextGroup = false;
+            this.acc = acc;
+            this.terminate = false;
+        }
     }
     
     @RequiredArgsConstructor
