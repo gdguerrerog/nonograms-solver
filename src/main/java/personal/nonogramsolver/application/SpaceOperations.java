@@ -6,7 +6,10 @@ package personal.nonogramsolver.application;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import personal.nonogramsolver.domain.ArraySection;
+import personal.nonogramsolver.domain.ArraySpace;
 import personal.nonogramsolver.domain.CellStatus;
+import personal.nonogramsolver.domain.Group;
 import personal.nonogramsolver.domain.Space;
 
 /**
@@ -22,5 +25,19 @@ public class SpaceOperations {
         CellStatus[] arr = new CellStatus[space.size()];
         for (int i = 0; i < arr.length; i++) arr[i] = space.val(i);
         return arr;
+    }
+    
+    public boolean admits(Group group, int startIndex, int endIndex) {
+        if (space.compleated()) {
+            if (endIndex - startIndex != 1) return false;
+            return group.val(startIndex) == space.size();
+        }
+
+        return space.size() >= new GroupOperations(group).minSize();
+    }
+    
+    public SpaceOperations shiftLocation(int shiftValue) {
+        Space space = new ArraySpace(statuses(), this.space.sectionIdx() + shiftValue);
+        return new SpaceOperations(space);
     }
 }

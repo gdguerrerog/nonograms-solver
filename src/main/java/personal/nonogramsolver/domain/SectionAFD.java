@@ -29,7 +29,7 @@ public class SectionAFD<TAcc> {
         TAcc acc = accumulator;
         
         for (int i = 0; i < section.size(); i++) {
-            Integer groupVal = groupIndex >= group.size() ? null : group.val(i);
+            Integer groupVal = groupIndex >= group.size() ? null : group.val(groupIndex);
             EvaluateResult<TAcc> result = func.evaluate(new EvaluateParams<>(status, i, groupVal, section.status(i), acc));
 
             

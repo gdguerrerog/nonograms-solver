@@ -37,7 +37,7 @@ public class SectionOperations {
         return new SectionOperations(new ArraySection(new GroupOperations(section.group()).reverse().getGroup(), status));
     }
     
-    public List<Space> spaces() {
+    public List<SpaceOperations> spaces() {
         final int FILLED_GROUP = 0;
         final int READING_GROUP = 1;
         
@@ -74,23 +74,25 @@ public class SectionOperations {
         
         if (result.status() == READING_GROUP) result.acc().spaces.add(new ArraySpace(result.acc().readedStatus.toArray(size -> new CellStatus[size]), result.acc().groupIndex)); 
         
-        return result.acc().spaces;
+        return result.acc().spaces.stream().map(space -> new SpaceOperations(space)).toList();
     }
     
-    public Tuple2<Integer, SectionOperations> removeBorders() {
-        Tuple2<Integer, SectionOperations> leftBorder = removeLeftBorder();
-        SectionOperations rightBorder = leftBorder.getT2().reverse().removeBorders().getT2().reverse();
-        return Tuples.of(leftBorder.getT1(), rightBorder);
+    public RemoveBordersResult removeBorders() {
+        RemoveBordersResult leftBorder = removeLeftBorder();
+        SectionOperations rightBorder = leftBorder.section.reverse().removeLeftBorder().section.reverse();
+        return new RemoveBordersResult(leftBorder.sectionShift, leftBorder.groupShift, rightBorder);
     }
     
-    private Tuple2<Integer, SectionOperations> removeLeftBorder() {
+    private RemoveBordersResult removeLeftBorder() {
+        if (section.size() == 0) return new RemoveBordersResult(0, 0, this);
+        
         final int READING_BORDER = 0, SUM_SPACE = 1;
         
         SectionAFD.IterateResult<SectionBorderAccumulator> acc = new SectionAFD<SectionBorderAccumulator>(section, READING_BORDER, (param) -> {
             switch (param.status()) {
                 case READING_BORDER: switch (param.cell()) {
                     case DISABLED: return new SectionAFD.EvaluateResult<>(READING_BORDER, new SectionBorderAccumulator(param.index(), 0));
-                    case ENABLED: return new SectionAFD.EvaluateResult<>(SUM_SPACE, new SectionBorderAccumulator(param.acc().lastDisabledIndex(), 0));
+                    case ENABLED: return new SectionAFD.EvaluateResult<>(SUM_SPACE, new SectionBorderAccumulator(param.acc().lastDisabledIndex(), 1));
                     case UNKNOWN: return new SectionAFD.EvaluateResult<>(READING_BORDER, false, param.acc(), true);
                 }
                 case SUM_SPACE: switch (param.cell()) {
@@ -103,12 +105,12 @@ public class SectionOperations {
             }
             
             return null;
-        }, new SectionBorderAccumulator(0, 0)).iterate();
+        }, new SectionBorderAccumulator(-1, 0)).iterate();
         
         Group newGroup = new GroupOperations(section.group()).subGroup(acc.groupIndex()).getGroup();
-        Section subSection = subSection(acc.acc().lastDisabledIndex(), section.size(), newGroup);
+        Section subSection = subSection(acc.acc().lastDisabledIndex + 1, section.size(), newGroup);
         
-        return Tuples.of(acc.acc().lastDisabledIndex, new SectionOperations(subSection));
+        return new RemoveBordersResult(acc.acc().lastDisabledIndex + 1, acc.groupIndex(), new SectionOperations(subSection));
     }
     
     public Section subSection(int startIndex, int endIndex, Group group) {
@@ -133,4 +135,10 @@ public class SectionOperations {
         int lastDisabledIndex,
         int enabledSpaceSum
     ) {}
+    
+    public static record RemoveBordersResult(
+        int sectionShift,
+        int groupShift,
+        SectionOperations section
+    ){}
 }

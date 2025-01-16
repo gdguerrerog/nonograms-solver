@@ -6,29 +6,17 @@ package personal.nonogramsolver.application.nonogram_strategy;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.TreeMap;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import personal.nonogramsolver.application.GroupOperations;
 import personal.nonogramsolver.application.NonogramOperations;
+import personal.nonogramsolver.application.SectionOperations;
+import personal.nonogramsolver.application.SpaceOperations;
 import personal.nonogramsolver.application.section_strategy.StrategySection;
 import personal.nonogramsolver.application.section_strategy.StrategySectionFactory;
-import personal.nonogramsolver.domain.CellStatus;
-import static personal.nonogramsolver.domain.CellStatus.DISABLED;
-import static personal.nonogramsolver.domain.CellStatus.ENABLED;
-import static personal.nonogramsolver.domain.CellStatus.UNKNOWN;
-import personal.nonogramsolver.domain.Group;
-import personal.nonogramsolver.domain.IllegalNonogramStatusException;
 import personal.nonogramsolver.domain.Nonogram;
 import personal.nonogramsolver.domain.Section;
-import personal.nonogramsolver.domain.SectionAFD;
-import reactor.core.publisher.EmitterProcessor;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Sinks;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
 
 /**
  *
@@ -40,11 +28,18 @@ public class StrategyNonogramSectionFactory implements StrategyNonogramFactory {
 
     @Override
     public StrategyNonogram build() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return new StrategyNonogramSection(strategyFactoryRegister.values().stream().flatMap(l -> l.stream()).map(StrategySectionFactory::build).toList());
     }
     
     public void registerStrategyFactory(StrategySectionFactory factory, int priority) {
-        strategyFactoryRegister.getOrDefault(priority, new LinkedList()).add(factory);
+        List<StrategySectionFactory> factories = strategyFactoryRegister.get(priority);
+        
+        if (factory == null) {
+            factories = new LinkedList<>();
+            strategyFactoryRegister.put(priority, factories);
+        }
+        
+        factories.add(factory);
     }
 
     @RequiredArgsConstructor
@@ -56,6 +51,17 @@ public class StrategyNonogramSectionFactory implements StrategyNonogramFactory {
         public List<NonogramInformation> getInformation(Nonogram nonogram) {
             NonogramOperations ops = new NonogramOperations(nonogram);
             for (int i = 0; i < nonogram.rows(); i++) {
+                Section section = ops.rowSection(i);
+                iterateAllOptions(section, opt -> {
+                    System.out.println(opt);
+                });
+            }
+            
+            for (int i = 0; i < nonogram.cols(); i++) {
+                Section section = ops.colSection(i);
+                iterateAllOptions(section, opt -> {
+                    System.out.println(opt);
+                });
             }
             
             return List.of();
@@ -64,63 +70,56 @@ public class StrategyNonogramSectionFactory implements StrategyNonogramFactory {
     
 
 
-    protected void iterateAllOptions(Section section, Consumer<Tuple2<SectionSpace, Integer[]>> consumer){
-        List<SectionSpace> spaces = getSpaces(section);
-//        Tuple2<List<SectionSpace>, Integer[]> sectionWithNoBorders = removeBorders(spaces, section.grops());
+    protected void iterateAllOptions(Section section, Consumer<List<IterateOption>> consumer){
+        SectionOperations.RemoveBordersResult noBorders = new SectionOperations(section).removeBorders();
+        List<SpaceOperations> spaces = noBorders.section().spaces();
+        RecursiveIterationStatus status = new RecursiveIterationStatus(spaces.toArray(size -> new SpaceOperations[size]), 0, new GroupOperations(section.group()), 0, new LinkedList());
+        iterateRecursive(status, (result) -> {
+            consumer.accept(result.stream().map(io -> new IterateOption(
+                    io.space.shiftLocation(noBorders.sectionShift()), 
+                    noBorders.groupShift() + io.groupShift, 
+                    noBorders.groupShift() + io.groupEnd)
+            ).toList());
+        });
     }
     
-    private void iterateRecursive(RecursiveIterationStatus status) {
+    private void iterateRecursive(RecursiveIterationStatus status, Consumer<List<IterateOption>> foundOption) {
         
         if (status.meIndex >= status.spaces.length) {
             // Most consume all groups. If a group is missing skip
-            if (status.groupIndex == status.groups.size()) status.consumer.accept(status.consumerStatus);
+            if (status.groupIndex == status.groups.size()) foundOption.accept(status.consumerStatus);
             return;
         }        
         
-        for (int i = status.groupIndex; i < status.groups.size(); i++) {
-            status.consumerStatus.push(Tuples.of(status.spaces[status.meIndex], new Integer[]{status.groupIndex, i}));
+        for (int i = status.groupIndex; i <= status.groups.size(); i++) {
+            // GroupOperations subGroup = status.groups.subGroup(status.groupIndex, i);
+            if (!status.spaces[status.meIndex].admits(status.groups.getGroup(), status.groupIndex, i)) continue;
+            status.consumerStatus.push(new IterateOption(status.spaces[status.meIndex], status.groupIndex, i));
             iterateRecursive(new RecursiveIterationStatus(
                     status.spaces, 
                     status.meIndex + 1, 
                     status.groups, 
                     i, 
-                    status.consumerStatus, 
-                    status.consumer
-            ));
+                    status.consumerStatus
+            ), foundOption);
             status.consumerStatus.pop();
         }
     }
     
-    protected List<SectionSpace> getSpaces(Section section) {
-        return List.of();
-    }
-
-    
-    protected static record SectionSpace(
-        int startIndex,
-        CellStatus[] values,
-        boolean completed
-    ){
-        public boolean admits(Group group, int startIndex, int endIndex) {
-            if (completed) {
-                if (endIndex - startIndex != 1) return false;
-                return group[startIndex] == values.length;
-            }
-            
-            return values.length >= new GroupOperations(group).minSize();
-        }
-
-    }
-    
-
-    
     private static record RecursiveIterationStatus(
-        SectionSpace[] spaces, 
+        SpaceOperations[] spaces, 
         int meIndex,
         GroupOperations groups, 
         int groupIndex, 
-        LinkedList<Tuple2<SectionSpace, Integer[]>> consumerStatus, 
-        Consumer<List<Tuple2<SectionSpace, Integer[]>>> consumer
+        LinkedList<IterateOption> consumerStatus
+    ) {}
+    
+    
+    
+    private static record IterateOption(
+        SpaceOperations space,
+        int groupShift,
+        int groupEnd
     ) {}
     
 }
