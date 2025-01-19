@@ -19,8 +19,6 @@ import personal.nonogramsolver.domain.IllegalNonogramStatusException;
 import personal.nonogramsolver.domain.Section;
 import personal.nonogramsolver.domain.SectionAFD;
 import personal.nonogramsolver.domain.Space;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
 
 /**
  *
@@ -141,4 +139,9 @@ public class SectionOperations {
         int groupShift,
         SectionOperations section
     ){}
+    
+    @Override
+    public String toString() {
+        return section.toString();
+    }
 }

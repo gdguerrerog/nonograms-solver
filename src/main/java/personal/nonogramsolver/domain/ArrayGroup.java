@@ -4,6 +4,7 @@
  */
 package personal.nonogramsolver.domain;
 
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -22,5 +23,10 @@ public class ArrayGroup implements Group {
     @Override
     public Integer val(int index) {
         return array[index];
+    }
+    
+    @Override
+    public String toString() {
+        return Arrays.toString(array);
     }
 }

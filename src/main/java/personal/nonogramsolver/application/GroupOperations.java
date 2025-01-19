@@ -62,5 +62,9 @@ public class GroupOperations {
         return new GroupOperations(new ArrayGroup(reversed));
     }
     
+    @Override
+    public String toString() {
+        return group.toString();
+    }
     
 }

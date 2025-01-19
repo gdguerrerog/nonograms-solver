@@ -4,10 +4,17 @@
  */
 package personal.nonogramsolver.domain;
 
+import lombok.NoArgsConstructor;
+
 /**
  *
  * @author German at CLEZ
  */
+@NoArgsConstructor
 public class IllegalNonogramStatusException extends RuntimeException {
+    
+    public IllegalNonogramStatusException(String info) {
+        super(info);
+    }
     
 }

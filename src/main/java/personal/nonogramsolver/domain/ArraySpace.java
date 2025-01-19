@@ -4,6 +4,7 @@
  */
 package personal.nonogramsolver.domain;
 
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -50,6 +51,11 @@ public class ArraySpace implements Space {
     @Override
     public int sectionIdx() {
         return sectionIdx;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("[idx=%d, space=%s]", this.sectionIdx, Arrays.toString(array)) ;
     }
     
 }

@@ -4,6 +4,7 @@
  */
 package personal.nonogramsolver.domain;
 
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -34,6 +35,11 @@ public class ArraySection implements Section {
     @Override
     public CellStatus status(int index) {
         return sectionArray[index];
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("[group=%s, section=%s]", group.toString(), Arrays.toString(sectionArray)) ;
     }
     
 }

@@ -5,6 +5,8 @@
 package personal.nonogramsolver.application.section_strategy;
 import java.util.List;
 import personal.nonogramsolver.domain.CellStatus;
+import personal.nonogramsolver.domain.GroupSpace;
+import personal.nonogramsolver.domain.Section;
 
 /**
  *
@@ -12,7 +14,7 @@ import personal.nonogramsolver.domain.CellStatus;
  */
 public interface StrategySection {
     
-    List<SectionInformation> getInformation(CellStatus[] section);
+    List<SectionInformation> getInformation(GroupSpace space);
     
     record SectionInformation (
         CellStatus status,

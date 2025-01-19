@@ -6,8 +6,11 @@ package personal.nonogramsolver.application.nonogram_strategy;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import personal.nonogramsolver.domain.ArrayNonogram;
 import personal.nonogramsolver.domain.CellStatus;
 import personal.nonogramsolver.domain.Nonogram;
+import personal.nonogramsolver.domain.Section;
+import personal.nonogramsolver.infrastructure.reader.BooleanArrayNonogramReader;
 import personal.nonogramsolver.infrastructure.writter.NonogramStringWritter;
 import personal.nonogramsolver.testutils.NonogramProvider;
 
@@ -20,18 +23,13 @@ public class StrategyNonogramSectionFactoryTest {
     @Test
     public void testIterateAllPossibilities() {
         
-        int size = 5;
-        Nonogram n = NonogramProvider.get().random(size, size, true);
-        for(int i = 0; i < size; i++) {
-            n.val(i, i, CellStatus.UNKNOWN);
-            n.val(i, 4 - i, CellStatus.UNKNOWN);
-        }
+        Nonogram n = new BooleanArrayNonogramReader(new Boolean[][]{{true, false, true, true, false, true, false}}, false).readNonogram();
+        n.val(0, 0, CellStatus.ENABLED);
+        n.val(1, 0, CellStatus.DISABLED);
+        n.val(4, 0, CellStatus.DISABLED);
+//        n.val(6, 0, CellStatus.DISABLED);
         
-        System.out.println(new NonogramStringWritter().writeNonogram(n));
-        
-        StrategyNonogramSectionFactory f = new StrategyNonogramSectionFactory();
-        StrategyNonogram s = f.build();
-        List<StrategyNonogram.NonogramInformation> info = s.getInformation(n);
+        new StrategyNonogramSectionFactory().build().getInformation(n);
     }
     
 }

@@ -27,10 +27,10 @@ public class SpaceOperations {
         return arr;
     }
     
-    public boolean admits(Group group, int startIndex, int endIndex) {
+    public boolean admits(Group group) {
         if (space.compleated()) {
-            if (endIndex - startIndex != 1) return false;
-            return group.val(startIndex) == space.size();
+            if (group.size() != 1) return false;
+            return group.val(0) == space.size();
         }
 
         return space.size() >= new GroupOperations(group).minSize();
@@ -39,5 +39,10 @@ public class SpaceOperations {
     public SpaceOperations shiftLocation(int shiftValue) {
         Space space = new ArraySpace(statuses(), this.space.sectionIdx() + shiftValue);
         return new SpaceOperations(space);
+    }
+    
+    @Override
+    public String toString() {
+        return space.toString();
     }
 }

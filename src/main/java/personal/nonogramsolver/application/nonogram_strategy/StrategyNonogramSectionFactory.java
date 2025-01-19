@@ -4,8 +4,10 @@
  */
 package personal.nonogramsolver.application.nonogram_strategy;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,10 @@ import personal.nonogramsolver.application.SectionOperations;
 import personal.nonogramsolver.application.SpaceOperations;
 import personal.nonogramsolver.application.section_strategy.StrategySection;
 import personal.nonogramsolver.application.section_strategy.StrategySectionFactory;
+import personal.nonogramsolver.domain.ArrayGroupSpace;
+import personal.nonogramsolver.domain.ArraySection;
+import personal.nonogramsolver.domain.CellStatus;
+import personal.nonogramsolver.domain.GroupSpace;
 import personal.nonogramsolver.domain.Nonogram;
 import personal.nonogramsolver.domain.Section;
 
@@ -34,7 +40,7 @@ public class StrategyNonogramSectionFactory implements StrategyNonogramFactory {
     public void registerStrategyFactory(StrategySectionFactory factory, int priority) {
         List<StrategySectionFactory> factories = strategyFactoryRegister.get(priority);
         
-        if (factory == null) {
+        if (factories == null) {
             factories = new LinkedList<>();
             strategyFactoryRegister.put(priority, factories);
         }
@@ -49,23 +55,52 @@ public class StrategyNonogramSectionFactory implements StrategyNonogramFactory {
         
         @Override
         public List<NonogramInformation> getInformation(Nonogram nonogram) {
+            
+            List<NonogramInformation> nonogramInfo = new LinkedList();
+;            
             NonogramOperations ops = new NonogramOperations(nonogram);
-            for (int i = 0; i < nonogram.rows(); i++) {
-                Section section = ops.rowSection(i);
-                iterateAllOptions(section, opt -> {
-                    System.out.println(opt);
-                });
+            for (StrategySection ss: strategies) {
+                for (int i = 0; i < nonogram.rows(); i++) {
+                    Section section = ops.rowSection(i);
+                    Map<Integer, CellStatus> info = sectionInformation(section, ss);
+                    for (Map.Entry<Integer, CellStatus> entry: info.entrySet()) {
+                        nonogramInfo.add(new NonogramInformation(entry.getValue(), entry.getKey(), i));
+                    }
+                }
+                
+                for (int i = 0; i < nonogram.cols(); i++) {
+                    Section section = ops.colSection(i);
+                    Map<Integer, CellStatus> info = sectionInformation(section, ss);
+                    for (Map.Entry<Integer, CellStatus> entry: info.entrySet()) {
+                        nonogramInfo.add(new NonogramInformation(entry.getValue(), i, entry.getKey()));
+                    }
+                }
             }
             
-            for (int i = 0; i < nonogram.cols(); i++) {
-                Section section = ops.colSection(i);
-                iterateAllOptions(section, opt -> {
-                    System.out.println(opt);
-                });
-            }
             
-            return List.of();
+            
+            return nonogramInfo;
         }
+    }
+    
+    private Map<Integer, CellStatus> sectionInformation(Section section, StrategySection ss) {
+        Map<Integer, CellStatus> repeatedInfo = new TreeMap();
+        boolean[] firstIteration = {true};
+        iterateAllOptions(section, opts -> {
+            opts.forEach(opt -> {
+                if (opt.space().getSpace().compleated()) return;
+                GroupOperations subGroup = new GroupOperations(section.group()).subGroup(opt.groupShift, opt.groupEnd);
+                GroupSpace gs = new ArrayGroupSpace(opt.space().statuses(), opt.space.getSpace().sectionIdx(), subGroup.getGroup());
+                List<StrategySection.SectionInformation> information = ss.getInformation(gs);
+                for (StrategySection.SectionInformation info: information) {
+                    if (firstIteration[0]) repeatedInfo.put(info.index() + gs.sectionIdx(), info.status());
+                    else if (repeatedInfo.containsKey(info.index()) && repeatedInfo.get(info.index()) != info.status()) repeatedInfo.remove(info.index());
+                }
+            });   
+            firstIteration[0] = false;
+        });
+        
+        return repeatedInfo;
     }
     
 
@@ -73,12 +108,12 @@ public class StrategyNonogramSectionFactory implements StrategyNonogramFactory {
     protected void iterateAllOptions(Section section, Consumer<List<IterateOption>> consumer){
         SectionOperations.RemoveBordersResult noBorders = new SectionOperations(section).removeBorders();
         List<SpaceOperations> spaces = noBorders.section().spaces();
-        RecursiveIterationStatus status = new RecursiveIterationStatus(spaces.toArray(size -> new SpaceOperations[size]), 0, new GroupOperations(section.group()), 0, new LinkedList());
+        RecursiveIterationStatus status = new RecursiveIterationStatus(spaces.toArray(size -> new SpaceOperations[size]), 0, new GroupOperations(section.group()), noBorders.groupShift(), new LinkedList());
         iterateRecursive(status, (result) -> {
             consumer.accept(result.stream().map(io -> new IterateOption(
                     io.space.shiftLocation(noBorders.sectionShift()), 
-                    noBorders.groupShift() + io.groupShift, 
-                    noBorders.groupShift() + io.groupEnd)
+                    io.groupShift, 
+                    io.groupEnd)
             ).toList());
         });
     }
@@ -92,9 +127,8 @@ public class StrategyNonogramSectionFactory implements StrategyNonogramFactory {
         }        
         
         for (int i = status.groupIndex; i <= status.groups.size(); i++) {
-            // GroupOperations subGroup = status.groups.subGroup(status.groupIndex, i);
-            if (!status.spaces[status.meIndex].admits(status.groups.getGroup(), status.groupIndex, i)) continue;
-            status.consumerStatus.push(new IterateOption(status.spaces[status.meIndex], status.groupIndex, i));
+            if (!status.spaces[status.meIndex].admits(status.groups.subGroup(status.groupIndex, i).getGroup())) continue;
+            status.consumerStatus.addLast(new IterateOption(status.spaces[status.meIndex], status.groupIndex, i));
             iterateRecursive(new RecursiveIterationStatus(
                     status.spaces, 
                     status.meIndex + 1, 
@@ -102,7 +136,7 @@ public class StrategyNonogramSectionFactory implements StrategyNonogramFactory {
                     i, 
                     status.consumerStatus
             ), foundOption);
-            status.consumerStatus.pop();
+            status.consumerStatus.removeLast();
         }
     }
     

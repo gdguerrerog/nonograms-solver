@@ -21,6 +21,6 @@ public interface Section extends Iterable<CellStatus> {
             @Override public boolean hasNext() { return index < size(); }
             @Override public CellStatus next() { return status(index++); }
         };
-        
     }
+    
 }
