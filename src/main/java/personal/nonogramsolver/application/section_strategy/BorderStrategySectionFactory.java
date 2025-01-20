@@ -26,26 +26,31 @@ public class BorderStrategySectionFactory implements StrategySectionFactory {
     public class BorderStrategySection implements StrategySection {
 
         @Override
-        public List<SectionInformation> getInformation(GroupSpace space) {
+        public InformationResult getInformation(GroupSpace space) {
+            if (space.group().size() == 0) return new InformationResult(true, List.of());
             
-            if (space.group().size() == 0) return IntStream.range(0, space.size()).mapToObj(i -> new SectionInformation(CellStatus.DISABLED, i)).toList();
-
+            
             Map<Integer, CellStatus> info = new TreeMap();
             if (space.val(0).equals(CellStatus.ENABLED)) {
                 for (int i = 1; i < space.group().val(0); i++) {
                     if (space.val(i) == CellStatus.UNKNOWN) info.put(i, CellStatus.ENABLED);
-                    else if (space.val(i) == CellStatus.DISABLED) throw new IllegalNonogramStatusException("Border impossible to complete");
+                    else if (space.val(i) == CellStatus.DISABLED) return new InformationResult(false, null);
                 }
+                if (space.group().val(0) < space.size() && space.val(space.group().val(0)) == CellStatus.UNKNOWN) info.put(space.group().val(0), CellStatus.DISABLED);
             }
             
+            int lastGroup = space.group().val(space.group().size() - 1);
             if (space.val(space.size() - 1).equals(CellStatus.ENABLED)) {
-                for (int i = 1; i < space.group().val(space.size() - 1); i++) {
-                    if (space.val(space.size() - i - 1) == CellStatus.UNKNOWN) info.put(space.size() - i - 1, CellStatus.ENABLED);
-                    else if (space.val(i) == CellStatus.DISABLED) throw new IllegalNonogramStatusException("Border impossible to complete");
+                for (int i = 1; i < lastGroup; i++) {
+                    int currentIndex = space.size() - i - 1;
+                    if (space.val(currentIndex) == CellStatus.UNKNOWN) info.put(currentIndex, CellStatus.ENABLED);
+                    else if (space.val(currentIndex) == CellStatus.DISABLED) return new InformationResult(false, null);
                 }
+                if (lastGroup < space.size() && space.val(space.size() - lastGroup - 1) == CellStatus.UNKNOWN) info.put(space.size() - lastGroup - 1, CellStatus.DISABLED);
             }
             
-            return info.entrySet().stream().map(e -> new SectionInformation(e.getValue(), e.getKey())).toList();
+            
+            return new InformationResult(true, info.entrySet().stream().map(e -> new SectionInformation(e.getValue(), e.getKey())).toList()); 
         }
         
         

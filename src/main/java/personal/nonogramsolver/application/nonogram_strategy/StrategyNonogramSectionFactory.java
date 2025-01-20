@@ -57,7 +57,7 @@ public class StrategyNonogramSectionFactory implements StrategyNonogramFactory {
         public List<NonogramInformation> getInformation(Nonogram nonogram) {
             
             List<NonogramInformation> nonogramInfo = new LinkedList();
-;            
+           
             NonogramOperations ops = new NonogramOperations(nonogram);
             for (StrategySection ss: strategies) {
                 for (int i = 0; i < nonogram.rows(); i++) {
@@ -87,16 +87,23 @@ public class StrategyNonogramSectionFactory implements StrategyNonogramFactory {
         Map<Integer, CellStatus> repeatedInfo = new TreeMap();
         boolean[] firstIteration = {true};
         iterateAllOptions(section, opts -> {
-            opts.forEach(opt -> {
-                if (opt.space().getSpace().compleated()) return;
+            
+            for (IterateOption opt: opts) {
+                if (opt.space().getSpace().compleated()) continue;
+                
                 GroupOperations subGroup = new GroupOperations(section.group()).subGroup(opt.groupShift, opt.groupEnd);
                 GroupSpace gs = new ArrayGroupSpace(opt.space().statuses(), opt.space.getSpace().sectionIdx(), subGroup.getGroup());
-                List<StrategySection.SectionInformation> information = ss.getInformation(gs);
+                StrategySection.InformationResult result = ss.getInformation(gs);
+                
+                if (!result.completable()) break;
+                
+                List<StrategySection.SectionInformation> information = result.information();
                 for (StrategySection.SectionInformation info: information) {
                     if (firstIteration[0]) repeatedInfo.put(info.index() + gs.sectionIdx(), info.status());
                     else if (repeatedInfo.containsKey(info.index()) && repeatedInfo.get(info.index()) != info.status()) repeatedInfo.remove(info.index());
-                }
-            });   
+                }    
+            }
+            
             firstIteration[0] = false;
         });
         

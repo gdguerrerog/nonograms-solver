@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.TreeMap;
 import personal.nonogramsolver.application.NonogramOperations;
 import personal.nonogramsolver.application.nonogram_strategy.StrategyNonogram;
-import personal.nonogramsolver.application.nonogram_strategy.StrategyNonogramSectionFactory;
 import personal.nonogramsolver.domain.Nonogram;
 import personal.nonogramsolver.domain.ReadOnlyNonogram;
 
@@ -22,13 +21,11 @@ public class StrategyNonogramSolverBuilder implements NonogramSolverBuilder {
     
     private final TreeMap<Integer, List<StrategyNonogramFactory>> strategyFactoryRegister = new TreeMap();
 
-    public StrategyNonogramSolverBuilder() {
-        // Default strategies
-        registerStrategyFactory(new StrategyNonogramSectionFactory(), 0);
-    }
-    
     public final void registerStrategyFactory(StrategyNonogramFactory factory, int priority) {
-        strategyFactoryRegister.getOrDefault(priority, new LinkedList()).add(factory);
+        
+        List<StrategyNonogramFactory> factories = strategyFactoryRegister.get(priority);
+        if (factories == null) strategyFactoryRegister.put(priority, factories = new LinkedList());
+        factories.add(factory);
     }
 
     @Override

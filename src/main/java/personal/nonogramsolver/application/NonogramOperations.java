@@ -103,13 +103,15 @@ public class NonogramOperations {
     public Section rowSection(int index) {
         CellStatus[] statuses = new CellStatus[nonogram.cols()];
         for (int i = 0; i < statuses.length; i++) statuses[i] = nonogram.val(i, index);
-        return new ArraySection(nonogram.row(index), statuses);
+        Integer[] groupArr =  nonogram.row(index);
+        return new ArraySection(groupArr, statuses);
     }
     
     public Section colSection(int index) {
         CellStatus[] statuses = new CellStatus[nonogram.rows()];
         for (int i = 0; i < statuses.length; i++) statuses[i] = nonogram.val(index, i);
-        return new ArraySection(nonogram.col(index), statuses);
+        Integer[] groupArr =  nonogram.col(index);
+        return new ArraySection(groupArr, statuses);
     }
     
     public List<Section> rowSections() {

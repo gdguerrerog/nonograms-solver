@@ -28,12 +28,14 @@ public class ReadOnlyNonogram implements Nonogram {
 
     @Override
     public Integer[] row(int index) { 
-        return Arrays.copyOf(nonogram.row(index), rows());
+        Integer[] group = nonogram.row(index);
+        return Arrays.copyOf(group, group.length);
     }
 
     @Override
     public Integer[] col(int index) {
-        return Arrays.copyOf(nonogram.col(index), cols());
+        Integer[] group = nonogram.col(index);
+        return Arrays.copyOf(group, group.length);
     }
 
     @Override

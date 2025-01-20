@@ -14,7 +14,12 @@ import personal.nonogramsolver.domain.Section;
  */
 public interface StrategySection {
     
-    List<SectionInformation> getInformation(GroupSpace space);
+    InformationResult getInformation(GroupSpace space);
+    
+    record InformationResult(
+        boolean completable,
+        List<SectionInformation> information
+    ){}
     
     record SectionInformation (
         CellStatus status,
