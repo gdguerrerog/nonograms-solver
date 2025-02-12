@@ -95,7 +95,9 @@ public class SectionOperations {
                 }
                 case SUM_SPACE: switch (param.cell()) {
                     case DISABLED: 
-                        if (param.group() != param.acc().enabledSpaceSum()) throw new IllegalNonogramStatusException();
+                        if (param.group() != param.acc().enabledSpaceSum()){
+                             throw new IllegalNonogramStatusException();
+                        }
                         return new SectionAFD.EvaluateResult<>(READING_BORDER, true, new SectionBorderAccumulator(param.index(), 0), false);
                     case ENABLED: return new SectionAFD.EvaluateResult<>(SUM_SPACE, new SectionBorderAccumulator(param.acc().lastDisabledIndex, param.acc().enabledSpaceSum + 1));
                     case UNKNOWN: return new SectionAFD.EvaluateResult<>(READING_BORDER, false, param.acc(), true);

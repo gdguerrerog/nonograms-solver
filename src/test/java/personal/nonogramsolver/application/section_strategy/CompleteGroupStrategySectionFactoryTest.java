@@ -16,12 +16,12 @@ import personal.nonogramsolver.testutils.AssertionUtils;
  *
  * @author German at CLEZ
  */
-public class EmptyGroupStrategySectionFactoryTest {
+public class CompleteGroupStrategySectionFactoryTest {
     
     @Test
     public void testEmptyGroup() {
         
-        StrategySection s = new EmptyGroupStrategySectionFactory().build();
+        StrategySection s = new CompleteGroupStrategySectionFactory().build();
         GroupSpace g = new ArrayGroupSpace(new CellStatus[]{CellStatus.UNKNOWN, CellStatus.UNKNOWN, CellStatus.UNKNOWN}, 0, new ArrayGroup(new Integer[]{}));
         
         StrategySection.InformationResult result = s.getInformation(g);
@@ -32,6 +32,22 @@ public class EmptyGroupStrategySectionFactoryTest {
         AssertionUtils.assertSectionInformation(new StrategySection.SectionInformation(CellStatus.DISABLED, 0), result.information().get(0));
         AssertionUtils.assertSectionInformation(new StrategySection.SectionInformation(CellStatus.DISABLED, 1), result.information().get(1));
         AssertionUtils.assertSectionInformation(new StrategySection.SectionInformation(CellStatus.DISABLED, 2), result.information().get(2));
+    }
+    
+    @Test
+    public void testCompleteGroup() {
+        
+        StrategySection s = new CompleteGroupStrategySectionFactory().build();
+        GroupSpace g = new ArrayGroupSpace(new CellStatus[]{CellStatus.UNKNOWN, CellStatus.ENABLED, CellStatus.UNKNOWN, CellStatus.ENABLED, CellStatus.ENABLED, CellStatus.UNKNOWN}, 0, new ArrayGroup(new Integer[]{1, 2}));
+        
+        StrategySection.InformationResult result = s.getInformation(g);
+        
+        Assertions.assertTrue(result.completable());
+        Assertions.assertEquals(3, result.information().size());
+        
+        AssertionUtils.assertSectionInformation(new StrategySection.SectionInformation(CellStatus.DISABLED, 0), result.information().get(0));
+        AssertionUtils.assertSectionInformation(new StrategySection.SectionInformation(CellStatus.DISABLED, 2), result.information().get(1));
+        AssertionUtils.assertSectionInformation(new StrategySection.SectionInformation(CellStatus.DISABLED, 5), result.information().get(2));
     }
     
 }

@@ -32,16 +32,24 @@ public class SectionAFD<TAcc> {
         
         boolean terminated = false;
         for (int i = 0; i < section.size(); i++) {
+            
+            if (groupIndex >= group.size()) {
+                terminated = true;
+                break;
+            }
+            
             Integer groupVal = groupIndex >= group.size() ? null : group.val(groupIndex);
             EvaluateResult<TAcc> result = func.evaluate(new EvaluateParams<>(status, i, groupVal, section.status(i), acc));
-
             
-            if (result.nextGroup) groupIndex++;
             status = result.nextStatus;
             acc = result.acc;
 
+            if (result.nextGroup) groupIndex++;
+
             terminated = result.terminate;
             if (result.terminate) break;
+
+
         }
 
         if (!terminated && evaluateLast) {
@@ -52,7 +60,7 @@ public class SectionAFD<TAcc> {
             acc = result.acc;
         }
         
-        return new IterateResult(status, groupIndex, acc);
+        return new IterateResult(status, groupIndex, acc, terminated);
     }
     
     public SectionAFD setEvaluateLast(boolean evaluateLast) {
@@ -100,5 +108,6 @@ public class SectionAFD<TAcc> {
         private final int status;
         private final int groupIndex;
         private final TAcc acc;
+        private final boolean terminated;
     }
 }
