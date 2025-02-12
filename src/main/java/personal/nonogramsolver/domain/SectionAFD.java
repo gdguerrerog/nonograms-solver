@@ -20,6 +20,8 @@ public class SectionAFD<TAcc> {
     private final EvaluateFuction<TAcc> func;
     private final TAcc accumulator;
     
+    private boolean evaluateLast = false;
+    
     public IterateResult<TAcc> iterate() {
         
         int status = initialStatus;
@@ -28,6 +30,7 @@ public class SectionAFD<TAcc> {
         
         TAcc acc = accumulator;
         
+        boolean terminated = false;
         for (int i = 0; i < section.size(); i++) {
             Integer groupVal = groupIndex >= group.size() ? null : group.val(groupIndex);
             EvaluateResult<TAcc> result = func.evaluate(new EvaluateParams<>(status, i, groupVal, section.status(i), acc));
@@ -37,10 +40,24 @@ public class SectionAFD<TAcc> {
             status = result.nextStatus;
             acc = result.acc;
 
+            terminated = result.terminate;
             if (result.terminate) break;
+        }
+
+        if (!terminated && evaluateLast) {
+            Integer groupVal = groupIndex >= group.size() ? null : group.val(groupIndex);
+            EvaluateResult<TAcc> result = func.evaluate(new EvaluateParams<>(status, section.size(), groupVal, CellStatus.DISABLED, acc));
+            if (result.nextGroup) groupIndex++;
+            status = result.nextStatus;
+            acc = result.acc;
         }
         
         return new IterateResult(status, groupIndex, acc);
+    }
+    
+    public SectionAFD setEvaluateLast(boolean evaluateLast) {
+        this.evaluateLast = evaluateLast;
+        return this;
     }
     
     @FunctionalInterface

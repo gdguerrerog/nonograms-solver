@@ -56,7 +56,7 @@ public class NonogramStringWritter implements NonogramWritter<String> {
                 char ch = switch (n.val(j, i)) {
                     case ENABLED -> '#';
                     case DISABLED -> '-';
-                    case UNKNOWN -> ' ';
+                    case UNKNOWN -> '.';
                 };
                 
                 str.append(ch);

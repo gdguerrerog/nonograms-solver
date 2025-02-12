@@ -125,4 +125,10 @@ public class NonogramOperations {
         for (int i = 0; i < nonogram.cols(); i++) exit.add(colSection(i));
         return exit;
     }
+    
+    public NonogramOperations clear() {
+        for (int i = 0; i < nonogram.rows(); i++) for (int j = 0; j < nonogram.cols(); j++) nonogram.val(j, i, CellStatus.UNKNOWN);
+        
+        return this;
+    }
 }

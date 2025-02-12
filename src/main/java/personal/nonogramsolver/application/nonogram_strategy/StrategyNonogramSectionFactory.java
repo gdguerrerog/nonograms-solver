@@ -4,7 +4,6 @@
  */
 package personal.nonogramsolver.application.nonogram_strategy;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import personal.nonogramsolver.application.SpaceOperations;
 import personal.nonogramsolver.application.section_strategy.StrategySection;
 import personal.nonogramsolver.application.section_strategy.StrategySectionFactory;
 import personal.nonogramsolver.domain.ArrayGroupSpace;
-import personal.nonogramsolver.domain.ArraySection;
 import personal.nonogramsolver.domain.CellStatus;
 import personal.nonogramsolver.domain.GroupSpace;
 import personal.nonogramsolver.domain.Nonogram;

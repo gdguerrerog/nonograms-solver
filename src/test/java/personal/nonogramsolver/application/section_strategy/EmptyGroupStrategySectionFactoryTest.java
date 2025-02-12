@@ -10,6 +10,7 @@ import personal.nonogramsolver.domain.ArrayGroup;
 import personal.nonogramsolver.domain.ArrayGroupSpace;
 import personal.nonogramsolver.domain.CellStatus;
 import personal.nonogramsolver.domain.GroupSpace;
+import personal.nonogramsolver.testutils.AssertionUtils;
 
 /**
  *
@@ -28,16 +29,9 @@ public class EmptyGroupStrategySectionFactoryTest {
         Assertions.assertTrue(result.completable());
         Assertions.assertEquals(3, result.information().size());
         
-        Assertions.assertEquals(CellStatus.DISABLED, result.information().get(0).status());         
-        Assertions.assertEquals(0, result.information().get(0).index());        
-       
-        Assertions.assertEquals(CellStatus.DISABLED, result.information().get(1).status());         
-        Assertions.assertEquals(1, result.information().get(1).index());  
-        
-        Assertions.assertEquals(CellStatus.DISABLED, result.information().get(2).status());         
-        Assertions.assertEquals(2, result.information().get(2).index());  
-
-
+        AssertionUtils.assertSectionInformation(new StrategySection.SectionInformation(CellStatus.DISABLED, 0), result.information().get(0));
+        AssertionUtils.assertSectionInformation(new StrategySection.SectionInformation(CellStatus.DISABLED, 1), result.information().get(1));
+        AssertionUtils.assertSectionInformation(new StrategySection.SectionInformation(CellStatus.DISABLED, 2), result.information().get(2));
     }
     
 }

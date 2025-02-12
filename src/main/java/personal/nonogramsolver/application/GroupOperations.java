@@ -67,4 +67,10 @@ public class GroupOperations {
         return group.toString();
     }
     
+    public Integer maxOfGroup() {
+        Integer max = 0;
+        for (int i = 0; i < group.size(); i++) if (group.val(i) > max) max = group.val(i);
+        return max;
+    }
+    
 }
